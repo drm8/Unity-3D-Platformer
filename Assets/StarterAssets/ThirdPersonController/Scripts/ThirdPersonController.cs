@@ -1,4 +1,5 @@
-﻿ using UnityEngine;
+﻿using System.Security.Cryptography;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -59,7 +60,13 @@ namespace StarterAssets
         [Tooltip("What layers the character uses as ground")]
         public LayerMask GroundLayers;
 
-        [Header("Cinemachine")]
+		[Tooltip("The amount of time the player holds on to a jump input")]
+		public float jumpBuffer = 0.1f;		
+
+		[Tooltip("The amount of time the player holds on to a jump input")]
+		public float coyoteTime = 0.15f;
+
+		[Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
         public GameObject CinemachineCameraTarget;
 
@@ -91,8 +98,12 @@ namespace StarterAssets
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
 
-        // animation IDs
-        private int _animIDSpeed;
+		// leniency deltatime
+		private float _timeSinceJumpInput;
+		private float _timeSinceGrounded;
+
+		// animation IDs
+		private int _animIDSpeed;
         private int _animIDGrounded;
         private int _animIDJump;
         private int _animIDFreeFall;
@@ -130,7 +141,11 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
-        }
+
+            // setting leniency timers past their limits
+			_timeSinceJumpInput = jumpBuffer + 0.1f;
+		    _timeSinceGrounded = coyoteTime + 0.1f;
+	}
 
         private void Start()
         {
@@ -281,10 +296,19 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
+            // reset the jump input timer
+            if (_input.jump)
+            {
+                _timeSinceJumpInput = 0.0f;
+            }
+
             if (Grounded)
             {
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
+
+                // reset the time since grounded
+                _timeSinceGrounded = 0.0f;
 
                 // update animator if using character
                 if (_hasAnimator)
@@ -298,31 +322,9 @@ namespace StarterAssets
                 {
                     _verticalVelocity = -2f;
                 }
-
-                // Jump
-                if (_input.jump && _jumpTimeoutDelta <= 0.0f)
-                {
-                    // the square root of H * -2 * G = how much velocity needed to reach desired height
-                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-
-                    // update animator if using character
-                    if (_hasAnimator)
-                    {
-                        _animator.SetBool(_animIDJump, true);
-                    }
-                }
-
-                // jump timeout
-                if (_jumpTimeoutDelta >= 0.0f)
-                {
-                    _jumpTimeoutDelta -= Time.deltaTime;
-                }
             }
             else
             {
-                // reset the jump timeout timer
-                _jumpTimeoutDelta = JumpTimeout;
-
                 // fall timeout
                 if (_fallTimeoutDelta >= 0.0f)
                 {
@@ -336,17 +338,48 @@ namespace StarterAssets
                         _animator.SetBool(_animIDFreeFall, true);
                     }
                 }
-
-                // if we are not grounded, do not jump
-                _input.jump = false;
             }
+            
+            if (_timeSinceGrounded <= coyoteTime)
+            {
+				// Jump
+				if (_timeSinceJumpInput <= jumpBuffer && _jumpTimeoutDelta <= 0.0f)
+				{
+					// the square root of H * -2 * G = how much velocity needed to reach desired height
+					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
+					// update animator if using character
+					if (_hasAnimator)
+					{
+						_animator.SetBool(_animIDJump, true);
+					}
+				}
+
+				// jump timeout
+				if (_jumpTimeoutDelta >= 0.0f)
+				{
+					_jumpTimeoutDelta -= Time.deltaTime;
+				}
+			}
+            else
+            {
+				// reset the jump timeout timer
+				_jumpTimeoutDelta = JumpTimeout;
+
+				// if we are not grounded for long enough, do not jump
+				_input.jump = false;
+			}
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
             if (_verticalVelocity < _terminalVelocity)
             {
                 _verticalVelocity += Gravity * Time.deltaTime;
             }
-        }
+
+            // increment leniency timers
+            _timeSinceJumpInput += Time.deltaTime;
+			_timeSinceGrounded += Time.deltaTime;
+		}
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
