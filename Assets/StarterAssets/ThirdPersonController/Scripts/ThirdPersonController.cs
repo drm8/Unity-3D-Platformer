@@ -142,10 +142,16 @@ namespace StarterAssets
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
 
-            // setting leniency timers past their limits
+            CancelLeniency();
+
+		}
+
+        private void CancelLeniency()
+        {
+			// setting leniency timers past their limits
 			_timeSinceJumpInput = jumpBuffer + 0.1f;
-		    _timeSinceGrounded = coyoteTime + 0.1f;
-	}
+			_timeSinceGrounded = coyoteTime + 0.1f;
+		}
 
         private void Start()
         {
@@ -347,6 +353,9 @@ namespace StarterAssets
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
+                    // Remove leniency to prevent multiple jumps
+					CancelLeniency();
 
 					// update animator if using character
 					if (_hasAnimator)
