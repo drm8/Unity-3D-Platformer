@@ -232,7 +232,17 @@ namespace StarterAssets
                 _cinemachineTargetYaw, 0.0f);
         }
 
-        private void Move()
+        public Vector3 getVelocity()
+        {
+            return _controller.velocity;
+        }
+
+		public void setVelocity(Vector3 vel)
+		{
+		    //_controller. = vel;
+		}
+
+		private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
