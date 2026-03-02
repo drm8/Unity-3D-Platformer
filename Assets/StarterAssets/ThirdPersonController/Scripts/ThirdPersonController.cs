@@ -94,8 +94,11 @@ namespace StarterAssets
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
 
-        // timeout deltatime
-        private float _jumpTimeoutDelta;
+		// my janky workaround to the character controller
+		private Vector3 _externalForce = Vector3.zero;
+
+		// timeout deltatime
+		private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
 
 		// leniency deltatime
@@ -185,7 +188,12 @@ namespace StarterAssets
         private void LateUpdate()
         {
             CameraRotation();
-        }
+		}
+
+        public void ApplyForce(Vector3 force)
+        {
+			_externalForce += force;
+		}
 
         private void AssignAnimationIDs()
         {
@@ -275,7 +283,7 @@ namespace StarterAssets
             {
                 _speed = targetSpeed;
             }
-
+            
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
@@ -299,11 +307,12 @@ namespace StarterAssets
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
             // move the player
-            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+			_controller.Move(_externalForce * Time.deltaTime + targetDirection.normalized * (_speed * Time.deltaTime) +
+							new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+			_externalForce = Vector3.zero;
 
-            // update animator if using character
-            if (_hasAnimator)
+			// update animator if using character
+			if (_hasAnimator)
             {
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
