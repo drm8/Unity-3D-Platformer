@@ -1815,7 +1815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11da38addf263ed448e422a4eed50051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConveyorMover
-  moveDirection: {x: 0, y: 0, z: 2}
+  conveyor: {fileID: 669623433}
 --- !u!1001 &2033265042
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,16 +1,19 @@
+using JetBrains.Annotations;
 using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 
 public class ConveyorMover : MonoBehaviour
 {
+    public Conveyor conveyor;
+
     private bool isMoving = false;
-    public Vector3 moveDirection = Vector3.forward;
+    private Vector3 moveDirection = Vector3.forward;
     private Transform child;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        moveDirection = conveyor.transform.forward * conveyor.moveSpeed;
 	}
 
     public void StartMoving(Transform newChild)
