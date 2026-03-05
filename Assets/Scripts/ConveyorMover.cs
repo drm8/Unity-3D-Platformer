@@ -1,4 +1,6 @@
 using JetBrains.Annotations;
+using StarterAssets;
+using System;
 using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 
@@ -9,6 +11,10 @@ public class ConveyorMover : MonoBehaviour
     private bool isMoving = false;
     private Vector3 moveDirection = Vector3.forward;
     private Transform child;
+
+    public float groundFriction = 7;
+	public float airFriction = 2;
+	private float residualSpeed = 0.0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -27,8 +33,7 @@ public class ConveyorMover : MonoBehaviour
     public void StopMoving()
     {
 		isMoving = false;
-		child.SetParent(null);
-		child = null;
+        residualSpeed = 1.0f;
 	}
 
 	// Update is called once per frame
@@ -36,7 +41,27 @@ public class ConveyorMover : MonoBehaviour
     {
         if (isMoving)
         {
-			GetComponent<Transform>().position += moveDirection * Time.deltaTime;
+            GetComponent<Transform>().position += moveDirection * Time.deltaTime;
+        }
+        else if (residualSpeed > 0.0f)
+        {
+			GetComponent<Transform>().position += moveDirection * residualSpeed * Time.deltaTime;
+
+            if (child.GetComponentInChildren<ThirdPersonController>().Grounded)
+            {
+				residualSpeed /= 1 + groundFriction * Time.deltaTime;
+			}
+            else
+            {
+				residualSpeed /= 1 + airFriction * Time.deltaTime;
+			}
+
+            if (residualSpeed <= 0.05f)
+            {
+				residualSpeed = 0.0f;
+				child.SetParent(null);
+				child = null;
+			}
 		}
     }
 }

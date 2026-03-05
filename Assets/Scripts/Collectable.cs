@@ -16,13 +16,14 @@ public class Collectable : MonoBehaviour
 	public float rotZMult;
 
 	private float defaultY;
-	private float floatDelta = 0;
+	private float floatDelta;
 
 	private void Start()
 	{
 		score = FindObjectsByType<ScoreUI>(FindObjectsSortMode.InstanceID)[0];
 		defaultY = gameObject.transform.position.y;
 		wavelength = wavelength * 2 * Mathf.PI;
+		floatDelta = Random.value * wavelength;
 	}
 
 	// Update is called once per frame

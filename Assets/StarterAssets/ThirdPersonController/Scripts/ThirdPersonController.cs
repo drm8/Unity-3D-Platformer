@@ -2,6 +2,7 @@
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -178,6 +179,11 @@ namespace StarterAssets
 
         private void Update()
         {
+            if (_input.exit)
+            {
+				SceneManager.LoadScene("Menu");
+			}
+
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
