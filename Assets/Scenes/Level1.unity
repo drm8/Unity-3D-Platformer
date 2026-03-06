@@ -293,7 +293,7 @@ GameObject:
   - component: {fileID: 392616179}
   - component: {fileID: 392616181}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Little Guy Dialog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -309,7 +309,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 779995549}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -338,7 +338,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: hiiiiiiiiiiii hello hi hi hey hi hi :)
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -430,6 +430,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed52365932cabae42afba26b597be95d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LittleGuyText
+  dialog: {fileID: 392616179}
+  littleGuy: {fileID: 949095137}
+  talkRate: 0.7
+  greetings:
+  - hi!
+  - hi!
+  - hey!
+  - hello!
+  - hi :D
+  - heya! :)
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

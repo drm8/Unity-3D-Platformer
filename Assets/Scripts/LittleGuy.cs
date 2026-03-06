@@ -12,10 +12,13 @@ public class LittleGuy : MonoBehaviour
 	private float bounceFade = 0.0f;
     private float initialY;
 
+    private Transform playerTransform;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         initialY = transform.position.y;
+        playerTransform = FindObjectsByType<CharacterController>(FindObjectsSortMode.InstanceID)[0].transform;
 	}
 
     // Update is called once per frame
@@ -24,7 +27,7 @@ public class LittleGuy : MonoBehaviour
         Vector3 origPos = transform.position;
 
 		// Rotate towards player
-		Vector3 playerPosition = FindObjectsByType<CharacterController>(FindObjectsSortMode.InstanceID)[0].transform.position;
+		Vector3 playerPosition = playerTransform.position;
 		transform.LookAt(new Vector3(playerPosition.x, origPos.y, playerPosition.z));
 
 		// Bounce around
@@ -34,7 +37,6 @@ public class LittleGuy : MonoBehaviour
         // These calculations are made in update in case activeRange is changed at runtime
 		distanceMultiplier = 1 / (activeRange[1] - activeRange[0]);
 		activeDistance = activeRange[1] * distanceMultiplier;
-        Debug.Log((playerPosition - origPos).magnitude);
 		bounceFade = Mathf.Clamp01(activeDistance - (playerPosition - origPos).magnitude * distanceMultiplier);
 
         float newY = initialY + bounceFade * bounceHeight * Mathf.Abs(Mathf.Sin(bounceDelta));
