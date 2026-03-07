@@ -1,5 +1,7 @@
+using StarterAssets;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class LittleGuyText : MonoBehaviour
 {
@@ -13,12 +15,15 @@ public class LittleGuyText : MonoBehaviour
 	public float talkRate;
 	public string[] greetings = { "hi!", "hi!", "hey!", "hello!" };
 
+	private StarterAssetsInputs input;
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
 	{
 		initialScale = transform.localScale.x;
 		playerTransform = FindObjectsByType<CharacterController>(FindObjectsSortMode.InstanceID)[0].transform;
 		parentTransform = GetComponentInParent<Transform>();
+		input = GetComponent<StarterAssetsInputs>();
 	}
 
 	private float burstScale(float delta)
