@@ -18,6 +18,13 @@ public class Collectable : MonoBehaviour
 	private float defaultY;
 	private float floatDelta;
 
+	private static int currentSound = 0;
+	public float soundCooldown = 2;
+	private static float soundTimer = 0;
+	private static bool cooledDown = false;
+	public AudioClip[] collectSounds;
+	public float collectVolume = 1.5f;
+
 	private void Start()
 	{
 		score = FindObjectsByType<ScoreUI>(FindObjectsSortMode.InstanceID)[0];
@@ -37,12 +44,27 @@ public class Collectable : MonoBehaviour
 		Vector3 pos = gameObject.transform.position;
 		gameObject.transform.position = new Vector3(pos.x, defaultY+Mathf.Sin(floatDelta * wavelength) * floatAmplitude, pos.z);
 
+		if (!cooledDown && soundTimer > 0)
+		{
+			cooledDown = true;
+			soundTimer -= Time.deltaTime;
+			if (soundTimer <= 0) currentSound = 0;
+		}
+	}
+
+	void LateUpdate()
+	{
+		cooledDown = false;
 	}
 
 	void OnTriggerEnter(Collider other)
 	{
 		if (other.CompareTag("Player"))
 		{
+			soundTimer = soundCooldown;
+			AudioSource.PlayClipAtPoint(collectSounds[currentSound], transform.position, collectVolume);
+			if (currentSound < 4) currentSound++;
+
 			score.IncreaseScore();
 			Object.Destroy(gameObject);
 		}

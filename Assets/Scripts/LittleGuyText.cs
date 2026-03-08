@@ -137,6 +137,10 @@ public class LittleGuyText : MonoBehaviour
 			buttonPrompt.hide();
 			hasBeenTalkedToRecently = false;
 		}
+		else
+		{
+			buttonPrompt.hide();
+		}
 
 		if (nextSceneTimer > 0)
 		{

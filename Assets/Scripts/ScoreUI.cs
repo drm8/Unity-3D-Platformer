@@ -30,7 +30,7 @@ public class ScoreUI : MonoBehaviour
 
     private void UpdateScore()
     {
-		scoreText.text = "Score: " + score;
+		scoreText.text = "Cubes: " + score;
 	}
 
     // Update is called once per frame

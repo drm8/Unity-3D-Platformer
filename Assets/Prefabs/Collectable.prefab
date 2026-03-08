@@ -131,3 +131,11 @@ MonoBehaviour:
   rotXMult: 300
   rotYMult: 150
   rotZMult: 100
+  soundCooldown: 0.75
+  collectSounds:
+  - {fileID: 8300000, guid: 6e025a4aae6edd64cbb3f9fa27a0fb25, type: 3}
+  - {fileID: 8300000, guid: b829eaecf6c4eeb4cbf42c4a6a689f27, type: 3}
+  - {fileID: 8300000, guid: 7f2712d4554b29f438afc1a0c44e2505, type: 3}
+  - {fileID: 8300000, guid: 157ae04d8087bb74b8c25f3b1eb6185b, type: 3}
+  - {fileID: 8300000, guid: e99f3cef59f74064eaee8d70bc6ebdc5, type: 3}
+  collectVolume: 1.5

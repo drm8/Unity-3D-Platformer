@@ -332,6 +332,11 @@ namespace StarterAssets
             }
         }
 
+        public void CancelSpeed()
+        {
+            _controller.Move(_controller.velocity * -1);
+        }
+
         private void JumpAndGravity()
         {
             // reset the jump input timer

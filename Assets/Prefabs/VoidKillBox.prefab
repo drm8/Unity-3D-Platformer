@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1938881422599902304}
   - component: {fileID: 214435756222290871}
-  - component: {fileID: 8945949914595571004}
+  - component: {fileID: 2990529388268752003}
   m_Layer: 0
   m_Name: VoidKillBox
   m_TagString: Untagged
@@ -54,7 +54,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 100, y: 1, z: 100}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8945949914595571004
+--- !u!114 &2990529388268752003
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,7 +63,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6064147403583444226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ccbafbb53d581946bc21ddb13932db6, type: 3}
+  m_Script: {fileID: 11500000, guid: 62e636e42a1e35646be63f267a07da1a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NewLevelTrigger
-  scene: Level1
+  m_EditorClassIdentifier: Assembly-CSharp::KillOnTouch
