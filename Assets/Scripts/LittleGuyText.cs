@@ -21,7 +21,7 @@ public class LittleGuyText : MonoBehaviour
 
 	private StarterAssetsInputs input;
 
-	public ScoreUI scoreUI;
+	private ScoreUI scoreUI;
 	public int scoreRequired = 5;
 	private float talkDelta;
 	public float talkRate;
@@ -41,6 +41,7 @@ public class LittleGuyText : MonoBehaviour
 		playerScript = FindObjectsByType<ThirdPersonController>(FindObjectsSortMode.InstanceID)[0];
 		parentTransform = GetComponentInParent<Transform>();
 		input = GetComponent<StarterAssetsInputs>();
+		scoreUI = FindObjectsByType<ScoreUI>(FindObjectsSortMode.InstanceID)[0];
 	}
 
 	private void OnInteract()

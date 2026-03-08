@@ -8,6 +8,8 @@ public class ConveyorMover : MonoBehaviour
 {
     public Conveyor conveyor;
 
+    private static ConveyorMover activeMover = null;
+
     private bool isMoving = false;
     private Vector3 moveDirection = Vector3.forward;
     private Transform child;
@@ -24,6 +26,9 @@ public class ConveyorMover : MonoBehaviour
 
     public void StartMoving(Transform newChild)
     {
+        if (activeMover != null) activeMover.CancelMoving();
+        activeMover = this;
+
         isMoving = true;
         GetComponent<Transform>().position = Vector3.zero;
 		newChild.SetParent(transform);
@@ -34,6 +39,15 @@ public class ConveyorMover : MonoBehaviour
     {
 		isMoving = false;
         residualSpeed = 1.0f;
+	}
+
+    public void CancelMoving()
+    {
+        activeMover = null;
+		isMoving = false;
+        residualSpeed = 0.0f;
+		child.SetParent(null);
+		child = null;
 	}
 
 	// Update is called once per frame
@@ -58,9 +72,7 @@ public class ConveyorMover : MonoBehaviour
 
             if (residualSpeed <= 0.05f)
             {
-				residualSpeed = 0.0f;
-				child.SetParent(null);
-				child = null;
+				CancelMoving();
 			}
 		}
     }
