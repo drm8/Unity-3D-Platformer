@@ -23,7 +23,12 @@ public class ScoreUI : MonoBehaviour
 
 	}
 
-    public void UpdateScore()
+    public int GetScore()
+    {
+        return score;
+    }
+
+    private void UpdateScore()
     {
 		scoreText.text = "Score: " + score;
 	}

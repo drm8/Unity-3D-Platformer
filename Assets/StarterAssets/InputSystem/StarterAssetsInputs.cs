@@ -53,6 +53,7 @@ namespace StarterAssets
 
 		public void OnInteract(InputValue value)
 		{
+
 			InteractInput(value.isPressed);
 		}
 #endif

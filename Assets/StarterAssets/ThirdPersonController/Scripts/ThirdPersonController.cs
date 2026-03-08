@@ -196,6 +196,13 @@ namespace StarterAssets
             CameraRotation();
 		}
 
+        public bool getInteractState()
+        {
+            bool interact = _input.interact;
+            _input.interact = false;
+            return interact;
+        }
+
         public void ApplyForce(Vector3 force)
         {
 			_externalForce += force;

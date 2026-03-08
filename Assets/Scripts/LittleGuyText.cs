@@ -2,28 +2,83 @@ using StarterAssets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Windows;
+using UnityEngine.SceneManagement;
 
 public class LittleGuyText : MonoBehaviour
 {
+	public string nextScene = "Level2";
+	public float nextSceneDelay = 3;
+	private float nextSceneTimer;
+
 	private float initialScale;
 	private float burstDelta = 1;
 	public TextMeshProUGUI dialog;
+	public LittleGuyButtonPrompt buttonPrompt;
+	private ThirdPersonController playerScript;
 	private Transform playerTransform;
 	private Transform parentTransform;
 	public LittleGuy littleGuy;
+
+	private StarterAssetsInputs input;
+
+	public ScoreUI scoreUI;
+	public int scoreRequired = 5;
 	private float talkDelta;
 	public float talkRate;
 	public string[] greetings = { "hi!", "hi!", "hey!", "hello!" };
+	private bool hasBeenTalkedTo = false;
+	private bool hasBeenTalkedToRecently = false;
 
-	private StarterAssetsInputs input;
+	public ParticleSystem particleSystem;
+	public AudioClip crunchSound;
+	public float crunchVolume = 1.0f;
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
 	{
 		initialScale = transform.localScale.x;
 		playerTransform = FindObjectsByType<CharacterController>(FindObjectsSortMode.InstanceID)[0].transform;
+		playerScript = FindObjectsByType<ThirdPersonController>(FindObjectsSortMode.InstanceID)[0];
 		parentTransform = GetComponentInParent<Transform>();
 		input = GetComponent<StarterAssetsInputs>();
+	}
+
+	private void OnInteract()
+	{
+		if (hasBeenTalkedTo)
+		{
+			if (scoreUI.GetScore() >= scoreRequired)
+			{
+				changeText("thank you so much! i was really hungry!");
+				triggerLevelEnd();
+			}
+			else
+			{
+				changeText("it's you again! it looks like you've found " + scoreUI.GetScore() + " out of " + scoreRequired + " gold cubes!");
+			}
+		}
+		else
+		{
+			if (scoreUI.GetScore() >= scoreRequired)
+			{
+				changeText("woah, " + scoreUI.GetScore() + " gold cubes! thank you so much!");
+				triggerLevelEnd();
+			}
+			else
+			{
+				changeText("hello there! can you help me? i could really use " + scoreRequired + " gold cubes!");
+			}
+		}
+
+		hasBeenTalkedTo = true;
+		hasBeenTalkedToRecently = true;
+	}
+
+	private void triggerLevelEnd()
+	{
+		AudioSource.PlayClipAtPoint(crunchSound, parentTransform.position, crunchVolume);
+		particleSystem.Play();
+		nextSceneTimer = nextSceneDelay;
 	}
 
 	private float burstScale(float delta)
@@ -49,11 +104,6 @@ public class LittleGuyText : MonoBehaviour
 		// Burst effect
 		burstDelta += Time.deltaTime*2;
 		transform.localScale = Vector3.one * (initialScale * burstScale(burstDelta));
-
-		// Rotate towards player
-		Vector3 origPos = transform.position;
-		Vector3 playerPosition = FindObjectsByType<CharacterController>(FindObjectsSortMode.InstanceID)[0].transform.position;
-		transform.LookAt(new Vector3(playerPosition.x, origPos.y, playerPosition.z));
 	}
 
 	private void dialogLogic()
@@ -62,18 +112,36 @@ public class LittleGuyText : MonoBehaviour
 
 		if (distanceToPlayer < (littleGuy.activeRange[0] + littleGuy.activeRange[1]) /2)
 		{
-			talkDelta += Time.deltaTime;
-			if (talkDelta >= talkRate)
+			if (hasBeenTalkedToRecently || nextSceneTimer > 0)
 			{
-				talkDelta %= talkRate;
-				changeText(greetings[Random.Range(0, greetings.Length)]);
+				buttonPrompt.hide();
+			}
+			else
+			{
+				talkDelta += Time.deltaTime;
+				if (talkDelta >= talkRate)
+				{
+					talkDelta %= talkRate;
+					changeText(greetings[Random.Range(0, greetings.Length)]);
+				}
+
+				buttonPrompt.show();
+				if (playerScript.getInteractState()) OnInteract();
 			}
 		}
 		else if (!dialog.text.Equals(""))
 		{
-			
 			talkDelta = 0;
 			changeText("");
+
+			buttonPrompt.hide();
+			hasBeenTalkedToRecently = false;
+		}
+
+		if (nextSceneTimer > 0)
+		{
+			nextSceneTimer -= Time.deltaTime;
+			if (nextSceneTimer <= 0) SceneManager.LoadScene(nextScene);
 		}
 	}
 }
