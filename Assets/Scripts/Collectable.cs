@@ -2,7 +2,7 @@ using Unity.Mathematics.Geometry;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
+//using static UnityEditor.PlayerSettings;
 
 public class Collectable : MonoBehaviour
 {
